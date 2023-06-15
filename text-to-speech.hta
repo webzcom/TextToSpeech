@@ -22,8 +22,25 @@ body {
  
 <script language="VBScript">
 Option Explicit
- 
 
+Sub TextToSpeechToFile(strText) 
+	Const SAFT48kHz16BitStereo = 39
+	Const SSFMCreateForWrite = 3 ' Creates file even if file exists and so destroys or overwrites the existing file
+
+	Dim oFileStream, oVoice
+
+	Set oFileStream = CreateObject("SAPI.SpFileStream")
+	
+	oFileStream.Format.Type = SAFT48kHz16BitStereo
+	oFileStream.Open "Sample.wav", SSFMCreateForWrite
+
+	Set oVoice = CreateObject("SAPI.SpVoice")
+	Set oVoice.Voice = oVoice.GetVoices.Item(1)
+	Set oVoice.AudioOutputStream = oFileStream
+	oVoice.Speak strText
+
+	oFileStream.Close
+End Sub
  
 Sub Window_OnLoad
 	window.resizeTo 1200, 800
@@ -37,6 +54,7 @@ Sub TextToSpeech()
 	Set sapi.Voice = sapi.GetVoices.Item(1)
 	speachInput = document.getElementById( "TextToRead").value
 	sapi.Speak speachInput
+	TextToSpeechToFile speachInput
 End Sub
 </script>
  
