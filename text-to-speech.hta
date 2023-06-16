@@ -21,13 +21,17 @@ body {
 </head>
  
 <script language="VBScript">
+'Important note: The Sapi control panel opens here using the .cpl file.
+'Set your system's voice setting here and the you will have to play around with the numbers to find the right voice.
+'C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
 Option Explicit
+
 
 Sub TextToSpeechToFile(strText) 
 	Const SAFT48kHz16BitStereo = 39
 	Const SSFMCreateForWrite = 3 ' Creates file even if file exists and so destroys or overwrites the existing file
 
-	Dim oFileStream, oVoice
+	Dim oFileStream, oVoice, voice_number
 
 	Set oFileStream = CreateObject("SAPI.SpFileStream")
 	
@@ -35,7 +39,8 @@ Sub TextToSpeechToFile(strText)
 	oFileStream.Open "Sample.wav", SSFMCreateForWrite
 
 	Set oVoice = CreateObject("SAPI.SpVoice")
-	Set oVoice.Voice = oVoice.GetVoices.Item(1)
+	voice_number = document.getElementById("voice_number").value
+	Set oVoice.Voice = oVoice.GetVoices.Item(voice_number)
 	Set oVoice.AudioOutputStream = oFileStream
 	oVoice.Speak strText
 
@@ -48,11 +53,14 @@ Sub Window_OnLoad
 End Sub
 
 Sub TextToSpeech()
-	Dim speachInput
+	Dim speachInput, voice_number
 	Dim sapi
+	voice_number = document.getElementById("voice_number").value
+	speachInput = document.getElementById("TextToRead").value
+	
 	Set sapi = createObject("sapi.spvoice")
-	Set sapi.Voice = sapi.GetVoices.Item(1)
-	speachInput = document.getElementById( "TextToRead").value
+	Set sapi.Voice = sapi.GetVoices.Item(voice_number)
+	
 	sapi.Speak speachInput
 	TextToSpeechToFile speachInput
 End Sub
@@ -61,10 +69,10 @@ End Sub
 <body>
 <h1>CyberAbyss Text Reader v1.0 Beta</h1> 
 
-<input type="button" value="Read Text" onclick="TextToSpeech" /></p>
- 
+Voice Number: 0 thru X
+<input type="text" id="voice_number" value="0" />
+<input type="button" value="Read Text" onclick="TextToSpeech" /></p> 
 <textarea id="TextToRead" name="TextToRead" rows="12" cols="80">
-
 </textarea> 
 <p id="OutputResult">Paste text you want to read and click "Read Text".</p> 
 </body>
