@@ -26,7 +26,7 @@ body {
 'C:\Windows\SysWOW64\Speech\SpeechUX\sapi.cpl
 Option Explicit
 
-
+ON ERROR RESUME NEXT
 Sub TextToSpeechToFile(strText) 
 	Const SAFT48kHz16BitStereo = 39
 	Const SSFMCreateForWrite = 3 ' Creates file even if file exists and so destroys or overwrites the existing file
@@ -49,7 +49,8 @@ End Sub
  
 Sub Window_OnLoad
 	window.resizeTo 1200, 800
-	document.title = document.title & ",  Version " & MyFirstHTA.Version
+	'document.title = document.title & ",  Version " & MyFirstHTA.Version
+	ListVoices
 End Sub
 
 Sub TextToSpeech()
@@ -60,9 +61,24 @@ Sub TextToSpeech()
 	
 	Set sapi = createObject("sapi.spvoice")
 	Set sapi.Voice = sapi.GetVoices.Item(voice_number)
+	sapi.Rate = document.getElementById("rate").value 
+	sapi.Volume = 90
 	
 	sapi.Speak speachInput
 	TextToSpeechToFile speachInput
+End Sub
+
+Sub ListVoices()
+	Dim objVoice, strVoice, strVoiceList
+	Set objVoice  = createObject("sapi.spvoice")
+	
+	strVoiceList = "Installed voices: "
+	
+'List voices that are installed.
+For Each strVoice in objVoice.GetVoices
+    strVoiceList = strVoiceList & " | " & strVoice.GetDescription
+Next
+document.getElementById("VoiceList").value = strVoiceList
 End Sub
 </script>
  
@@ -70,10 +86,16 @@ End Sub
 <h1>CyberAbyss Text Reader v1.0 Beta</h1> 
 
 Voice Number: 0 thru X
-<input type="text" id="voice_number" value="0" />
+<br>
+<input type="text" id="voice_number" value="0" /><br>
+Reading Rate<br>
+<input type="text" id="rate" value="1" /><br>
+
 <input type="button" value="Read Text" onclick="TextToSpeech" /></p> 
 <textarea id="TextToRead" name="TextToRead" rows="12" cols="80">
 </textarea> 
+<textarea id="VoiceList" name="VoiceList" rows="4" cols="80">
+</textarea>
 <p id="OutputResult">Paste text you want to read and click "Read Text".</p> 
 </body>
 </html>
