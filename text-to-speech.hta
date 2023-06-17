@@ -31,12 +31,17 @@ Sub TextToSpeechToFile(strText)
 	Const SAFT48kHz16BitStereo = 39
 	Const SSFMCreateForWrite = 3 ' Creates file even if file exists and so destroys or overwrites the existing file
 
-	Dim oFileStream, oVoice, voice_number
+	Dim oFileStream, oVoice, voice_number, strFileOut
 
 	Set oFileStream = CreateObject("SAPI.SpFileStream")
+		
+	strFileOut = document.getElementById("FileOut").value 
+	if LCase(Right(strFileOut,4)) <> ".wav" then
+		strFileOut = strFileOut & ".wav"
+	end if
 	
 	oFileStream.Format.Type = SAFT48kHz16BitStereo
-	oFileStream.Open "Sample.wav", SSFMCreateForWrite
+	oFileStream.Open strFileOut, SSFMCreateForWrite
 
 	Set oVoice = CreateObject("SAPI.SpVoice")
 	voice_number = document.getElementById("voice_number").value
@@ -90,8 +95,11 @@ Voice Number: 0 thru X
 <input type="text" id="voice_number" value="0" /><br>
 Reading Rate<br>
 <input type="text" id="rate" value="1" /><br>
+Reading Rate<br>
+<input size="55" type="text" id="FileOut" value="Sample" />.wav<br>
+<input type="button" value="Read Text" onclick="TextToSpeech" /></p>
 
-<input type="button" value="Read Text" onclick="TextToSpeech" /></p> 
+ 
 <textarea id="TextToRead" name="TextToRead" rows="12" cols="80">
 </textarea> 
 <textarea id="VoiceList" name="VoiceList" rows="4" cols="80">
