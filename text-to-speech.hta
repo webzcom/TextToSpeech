@@ -15,7 +15,7 @@ body {
 	color: darkblue;
 	font-family: Calibri;
 	font-size: 12pt;
-	margin: 4em 3em;
+	margin: 1em 1em;
 }
 </style>
 </head>
@@ -53,7 +53,7 @@ Sub TextToSpeechToFile(strText)
 End Sub
  
 Sub Window_OnLoad
-	window.resizeTo 1200, 800
+	window.resizeTo 1300, 1000
 	'document.title = document.title & ",  Version " & MyFirstHTA.Version
 	ListVoices
 End Sub
@@ -69,8 +69,13 @@ Sub TextToSpeech()
 	sapi.Rate = document.getElementById("rate").value 
 	sapi.Volume = 90
 	
-	sapi.Speak speachInput
-	TextToSpeechToFile speachInput
+	
+	If CreateFileOnlyCheck then
+		TextToSpeechToFile speachInput
+	else
+		sapi.Speak speachInput
+		TextToSpeechToFile speachInput
+	end if
 End Sub
 
 Sub ListVoices()
@@ -85,6 +90,14 @@ For Each strVoice in objVoice.GetVoices
 Next
 document.getElementById("VoiceList").value = strVoiceList
 End Sub
+
+function CreateFileOnlyCheck() 
+    if document.getElementById("createFileOnly").checked then
+		msgbox("Create MP3 file only.")
+		CreateFileOnlyCheck = true
+	end if
+end function	
+}
 </script>
  
 <body>
@@ -96,11 +109,13 @@ Voice Number: 0 thru X
 Reading Rate<br>
 <input type="text" id="rate" value="1" /><br>
 Reading Rate<br>
-<input size="55" type="text" id="FileOut" value="Sample" />.wav<br>
+<input size="55" type="text" id="FileOut" value="Sample" />.wav 
+<input type="checkbox" id="createFileOnly" name="createFileOnly" value="Yes">
+  <label for="createFileOny"> Create MP3 file only</label><br>
 <input type="button" value="Read Text" onclick="TextToSpeech" /></p>
 
  
-<textarea id="TextToRead" name="TextToRead" rows="12" cols="80">
+<textarea id="TextToRead" name="TextToRead" rows="20" cols="90">
 </textarea> 
 <textarea id="VoiceList" name="VoiceList" rows="4" cols="80">
 </textarea>
