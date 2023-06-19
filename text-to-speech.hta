@@ -49,6 +49,7 @@ Sub TextToSpeechToFile(strText)
 	oFileStream.Open strFileOut, SSFMCreateForWrite
 
 	Set oVoice = CreateObject("SAPI.SpVoice")
+	oVoice.Rate = document.getElementById("rate").value 
 	voice_number = document.getElementById("voice_number").value
 	Set oVoice.Voice = oVoice.GetVoices.Item(voice_number)
 	Set oVoice.AudioOutputStream = oFileStream
@@ -106,11 +107,11 @@ end function
 </script>
  
 <body>
-<h1>CyberAbyss Text Reader v2.0 Beta</h1> 
+<h1>CyberAbyss Text Reader v1.0 Beta</h1> 
 
-Voice Number: 0 thru X
+Voice Number: 0 or 5
 <br>
-<input type="text" id="voice_number" value="0" /><br>
+<input type="text" id="voice_number" value="5" /><br>
 Reading Rate<br>
 <input type="text" id="rate" value="1" /><br>
 Reading Rate<br>
