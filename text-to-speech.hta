@@ -54,8 +54,8 @@ Sub TextToSpeechToFile(strText)
 	Set oVoice.Voice = oVoice.GetVoices.Item(voice_number)
 	Set oVoice.AudioOutputStream = oFileStream
 	oVoice.Speak strText
-
 	oFileStream.Close
+	ConvertWav2MP3 strFileOut
 End Sub
  
 Sub Window_OnLoad
@@ -80,7 +80,7 @@ Sub TextToSpeech()
 		TextToSpeechToFile speachInput
 	else
 		sapi.Speak speachInput
-		TextToSpeechToFile speachInput
+		TextToSpeechToFile speachInput		
 	end if
 End Sub
 
@@ -97,13 +97,54 @@ Next
 document.getElementById("VoiceList").value = strVoiceList
 End Sub
 
+
+Function ConvertWav2MP3(strWavFile)
+	'From CHATGPT
+	'Yes, you can convert a .wav file to .mp3 using VBScript. However, VBScript itself does not have built-in capabilities for audio conversion. You'll 'need to use an external tool or library to perform the conversion.
+
+	'One popular tool for audio conversion is FFmpeg, a command-line utility that supports various audio and video formats. To use FFmpeg within VBScript, 'you can execute it as a subprocess using the WshShell object. Here's an example script that demonstrates the conversion process:
+
+
+	'Make sure to replace C:\path\to\ffmpeg.exe with the actual path to the FFmpeg executable on your system. Similarly, replace the input and output file 'paths with the appropriate file locations.
+
+	'Save the script with a .vbs extension and run it using the Windows Script Host. The script will execute FFmpeg to convert the input .wav file to an '.mp3 file at the specified output path.
+
+	'Remember to have FFmpeg installed on your system and accessible via the provided path for this script to work.
+	Dim WshShell
+	Set WshShell = CreateObject("WScript.Shell")
+
+	' Path to the FFmpeg executable
+	Dim ffmpegPath
+	ffmpegPath = "d:\ffmpeg\bin\ffmpeg.exe"
+
+	' Input and output file paths
+	Dim inputFilePath
+	inputFilePath = strWavFile
+
+	Dim outputFilePath
+	outputFilePath = Replace(strWavFile,".wav",".mp3")
+
+	' FFmpeg command to convert .wav to .mp3
+	Dim ffmpegCommand
+	ffmpegCommand = """" & ffmpegPath & """ -i """ & inputFilePath & """ """ & outputFilePath & """"
+
+	' Execute the FFmpeg command
+	WshShell.Run ffmpegCommand, 0, True
+
+	' Cleanup
+	Set WshShell = Nothing
+
+	msgbox("MP3 Conversion complete!")
+End Function
+
 function CreateFileOnlyCheck() 
     if document.getElementById("createFileOnly").checked then
 		msgbox("Create MP3 file only.")
 		CreateFileOnlyCheck = true
 	end if
 end function	
-}
+
+
 </script>
  
 <body>
@@ -115,7 +156,7 @@ Voice Number: 0 or 5
 Reading Rate<br>
 <input type="text" id="rate" value="1" /><br>
 Reading Rate<br>
-<input size="55" type="text" id="FileOut" value="Sample" />.wav 
+<input size="55" type="text" id="FileOut" value="Sample " />.wav & .mp3 
 <input type="checkbox" id="createFileOnly" name="createFileOnly" value="Yes">
   <label for="createFileOny"> Create MP3 file only</label><br>
 <input type="button" value="Read Text" onclick="TextToSpeech" /></p>
