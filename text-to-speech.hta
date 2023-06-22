@@ -4,7 +4,7 @@
 <title>CyberAbyss Text Reader v1.0</title>
  
 <HTA:APPLICATION
-  APPLICATIONNAME="CyberAbyss Text Reader 1.0"
+  APPLICATIONNAME="CyberAbyss Text Reader & MP3 Creator"
   ID="CyberAbyssTextReader"
   VERSION="1.0"
   SCROLL="no"/>
@@ -73,8 +73,7 @@ Sub TextToSpeech()
 	Set sapi = createObject("sapi.spvoice")
 	Set sapi.Voice = sapi.GetVoices.Item(voice_number)
 	sapi.Rate = document.getElementById("rate").value 
-	sapi.Volume = 90
-	
+	sapi.Volume = 90	
 	
 	If CreateFileOnlyCheck then
 		TextToSpeechToFile speachInput
@@ -85,31 +84,22 @@ Sub TextToSpeech()
 End Sub
 
 Sub ListVoices()
-	Dim objVoice, strVoice, strVoiceList
-	Set objVoice  = createObject("sapi.spvoice")
-	
+	Dim objVoice, strVoice, strVoiceList, voiceIndex
+	Set objVoice  = createObject("sapi.spvoice")	
 	strVoiceList = "Installed voices: "
-	
-'List voices that are installed.
-For Each strVoice in objVoice.GetVoices
-    strVoiceList = strVoiceList & " | " & strVoice.GetDescription
-Next
-document.getElementById("VoiceList").value = strVoiceList
+	voiceIndex =- 0
+
+	'List installed voices
+	For Each strVoice in objVoice.GetVoices
+		strVoiceList = strVoiceList & " | " & strVoice.GetDescription & " - Index: " & voiceIndex
+		voiceIndex = voiceIndex + 1
+	Next
+	document.getElementById("VoiceList").value = strVoiceList
 End Sub
 
 
 Function ConvertWav2MP3(strWavFile)
-	'From CHATGPT
-	'Yes, you can convert a .wav file to .mp3 using VBScript. However, VBScript itself does not have built-in capabilities for audio conversion. You'll 'need to use an external tool or library to perform the conversion.
-
-	'One popular tool for audio conversion is FFmpeg, a command-line utility that supports various audio and video formats. To use FFmpeg within VBScript, 'you can execute it as a subprocess using the WshShell object. Here's an example script that demonstrates the conversion process:
-
-
-	'Make sure to replace C:\path\to\ffmpeg.exe with the actual path to the FFmpeg executable on your system. Similarly, replace the input and output file 'paths with the appropriate file locations.
-
-	'Save the script with a .vbs extension and run it using the Windows Script Host. The script will execute FFmpeg to convert the input .wav file to an '.mp3 file at the specified output path.
-
-	'Remember to have FFmpeg installed on your system and accessible via the provided path for this script to work.
+	'Use ffmpeg.exe to convert the wav file to mp3
 	Dim WshShell
 	Set WshShell = CreateObject("WScript.Shell")
 
@@ -144,28 +134,36 @@ function CreateFileOnlyCheck()
 	end if
 end function	
 
-
 </script>
  
 <body>
-<h1>CyberAbyss Text Reader v1.0 Beta</h1> 
-
-Voice Number: 0 or 5
-<br>
-<input type="text" id="voice_number" value="5" /><br>
-Reading Rate<br>
-<input type="text" id="rate" value="1" /><br>
-Reading Rate<br>
-<input size="55" type="text" id="FileOut" value="Sample " />.wav & .mp3 
-<input type="checkbox" id="createFileOnly" name="createFileOnly" value="Yes">
-  <label for="createFileOny"> Create MP3 file only</label><br>
-<input type="button" value="Read Text" onclick="TextToSpeech" /></p>
-
+	<h1>CyberAbyss Text Reader & MP3</h1> 
+	<table width="60%">
+		<tr>
+			<td align="left" width="35%">Voice Index </td>
+			<td align="left" width="10%"><input type="text" id="voice_number" value="5" /></td>
+			<td align="left" width="35%">Reading Rate </td>
+			<td align="left" width="10%"><input type="text" id="rate" value="1" /></td>
+		</tr>	
+	</table>
+	<table>
+		<tr>
+			<td>File Name </td>
+			<td><input size="45" type="text" id="FileOut" value="Sample" />.mp3 <input type="checkbox" id="createFileOnly" name="createFileOnly" value="Yes">
+			<label for="createFileOny"> Create MP3 file only</label></td>		
+		</tr>
+	</table>
+	<div style="padding-top: 15px;">	
+		 <input type="button" value="Read text & Create MP3" onclick="TextToSpeech" />	
+	</div>
+	
+	
  
-<textarea id="TextToRead" name="TextToRead" rows="20" cols="90">
-</textarea> 
-<textarea id="VoiceList" name="VoiceList" rows="4" cols="80">
-</textarea>
-<p id="OutputResult">Paste text you want to read and click "Read Text".</p> 
+	
+	<textarea id="TextToRead" name="TextToRead" rows="20" cols="90">
+	</textarea> 
+	<textarea id="VoiceList" name="VoiceList" rows="4" cols="80">
+	</textarea>
+
 </body>
 </html>
